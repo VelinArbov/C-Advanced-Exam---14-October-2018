@@ -1,0 +1,74 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+namespace Miner
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int rows = int.Parse(Console.ReadLine());
+            string[] commands = Console.ReadLine().Split();
+            char[][] matrix = new char[rows][];
+            int coals = 0;
+
+            int minerRow = -1;
+            int minerCol = -1;
+
+            for (int row = 0; row < rows; row++)
+            {
+                matrix[row] = Console.ReadLine().Split().Select(char.Parse).ToArray();
+
+                if (matrix[row].Contains('s'))
+                {
+                    minerRow = row;
+                    minerCol = Array.IndexOf(matrix[row], 's');
+                    matrix[minerRow][minerCol] = '*';
+                }
+                coals += matrix[row].Where(c => c == 'c').Count();
+
+            }
+
+            for (int z = 0; z < commands.Length; z++)
+            {
+
+                string currentCommand = commands[z];
+
+                switch (currentCommand.ToLower())
+                {
+                    case "up": minerRow = minerRow - 1 < 0 ? minerRow : minerRow - 1; break;
+                    case "down": minerRow = minerRow + 1 >= rows ? minerRow : minerRow + 1; break;
+                    case "left": minerCol = minerCol - 1 < 0 ? minerCol : minerCol - 1; break;
+                    case "right": minerCol = minerCol + 1 >= matrix[minerRow].Length ? minerCol : minerCol + 1; break;
+                }
+
+                if (matrix[minerRow][minerCol] == 'e')
+                {
+
+                    Console.WriteLine($"Game over! ({minerRow}, {minerCol})");
+                    return;
+
+                }
+                else if (matrix[minerRow][minerCol] == 'c')
+                {
+                    matrix[minerRow][minerCol] = '*';
+                    coals--;
+                    if (coals == 0)
+                    {
+                        Console.WriteLine($"You collected all coals! ({minerRow}, {minerCol})");
+                        return;
+                    }
+
+                }
+            }
+
+            Console.WriteLine($"{coals} coals left. ({minerRow}, {minerCol})");
+
+
+        }
+
+    }
+
+}
+
+
